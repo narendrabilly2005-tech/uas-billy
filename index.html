@@ -1,0 +1,250 @@
+﻿<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dashboard Penjadwalan Hemodialisis | RSUD Semarang</title>
+  <meta name="description" content="Dashboard penjadwalan hemodialisis modern dengan manajemen sesi pagi dan siang." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    :root{--primary:#0ea5e9;--primary-light:#38bdf8;--secondary:#6366f1;--success:#22c55e;--warning:#f59e0b;--danger:#ef4444;--info:#06b6d4;--bg:#0f172a;--bg2:#1e293b;--bg3:#334155;--card:#1e293b;--card2:#263348;--border:#334155;--text:#f1f5f9;--text2:#94a3b8;--text3:#64748b;--radius:14px;--shadow:0 4px 24px rgba(0,0,0,0.4)}
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+    header{background:linear-gradient(135deg,#0f172a,#1e293b);border-bottom:1px solid var(--border);padding:0 2rem;display:flex;align-items:center;justify-content:space-between;height:68px;position:sticky;top:0;z-index:100}
+    .brand{display:flex;align-items:center;gap:12px}
+    .brand-icon{width:40px;height:40px;background:linear-gradient(135deg,var(--primary),var(--secondary));border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.2rem}
+    .brand-text h1{font-size:1rem;font-weight:700}
+    .brand-text p{font-size:0.7rem;color:var(--text2)}
+    .header-right{display:flex;align-items:center;gap:1rem}
+    .live-badge{display:flex;align-items:center;gap:6px;background:rgba(34,197,94,0.15);border:1px solid rgba(34,197,94,0.3);padding:4px 12px;border-radius:20px;font-size:0.75rem;color:var(--success);font-weight:600}
+    .live-dot{width:7px;height:7px;background:var(--success);border-radius:50%;animation:pulse 1.5s infinite}
+    @keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:0.5;transform:scale(1.3)}}
+    .clock{font-size:0.85rem;color:var(--text2);font-weight:500}
+    main{padding:1.5rem 2rem;max-width:1600px;margin:0 auto}
+    .alert-banner{background:linear-gradient(135deg,rgba(239,68,68,0.15),rgba(239,68,68,0.05));border:1px solid rgba(239,68,68,0.4);border-left:4px solid var(--danger);border-radius:var(--radius);padding:1rem 1.25rem;margin-bottom:1.5rem;display:flex;align-items:flex-start;gap:12px;animation:slideDown 0.4s ease}
+    @keyframes slideDown{from{opacity:0;transform:translateY(-10px)}to{opacity:1;transform:translateY(0)}}
+    .alert-icon{font-size:1.4rem;flex-shrink:0}
+    .alert-content h3{font-size:0.9rem;font-weight:700;color:#fca5a5;margin-bottom:6px}
+    .alert-list{list-style:none;display:flex;flex-wrap:wrap;gap:6px}
+    .alert-tag{background:rgba(239,68,68,0.2);border:1px solid rgba(239,68,68,0.3);padding:3px 12px;border-radius:20px;font-size:0.73rem;color:#fca5a5;font-weight:500}
+    .summary-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1rem;margin-bottom:1.5rem}
+    .card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:1.25rem 1.5rem;position:relative;overflow:hidden;transition:transform 0.2s,box-shadow 0.2s}
+    .card:hover{transform:translateY(-3px);box-shadow:var(--shadow)}
+    .card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px}
+    .card.blue::before{background:linear-gradient(90deg,var(--primary),var(--primary-light))}
+    .card.purple::before{background:linear-gradient(90deg,var(--secondary),#a78bfa)}
+    .card.green::before{background:linear-gradient(90deg,var(--success),#86efac)}
+    .card.orange::before{background:linear-gradient(90deg,var(--warning),#fcd34d)}
+    .card.red::before{background:linear-gradient(90deg,var(--danger),#fca5a5)}
+    .card.cyan::before{background:linear-gradient(90deg,var(--info),#67e8f9)}
+    .card-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:0.75rem}
+    .card-label{font-size:0.75rem;color:var(--text2);font-weight:500;text-transform:uppercase;letter-spacing:0.05em}
+    .card-icon{font-size:1.3rem;opacity:0.8}
+    .card-value{font-size:2rem;font-weight:800;line-height:1;margin-bottom:4px}
+    .card.blue .card-value{color:var(--primary-light)}.card.purple .card-value{color:#a78bfa}.card.green .card-value{color:#86efac}.card.orange .card-value{color:#fcd34d}.card.red .card-value{color:#fca5a5}.card.cyan .card-value{color:#67e8f9}
+    .card-sub{font-size:0.75rem;color:var(--text3)}
+    .filters-bar{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:1rem 1.25rem;margin-bottom:1.5rem;display:flex;flex-wrap:wrap;gap:0.75rem;align-items:center}
+    .filter-label{font-size:0.8rem;color:var(--text2);font-weight:600}
+    .filter-group{display:flex;gap:6px;flex-wrap:wrap}
+    .filter-btn{background:var(--bg3);border:1px solid var(--border);color:var(--text2);padding:6px 14px;border-radius:20px;font-size:0.78rem;font-weight:500;cursor:pointer;transition:all 0.2s;font-family:'Inter',sans-serif}
+    .filter-btn:hover{background:var(--card2);color:var(--text);border-color:var(--primary)}
+    .filter-btn.active{background:var(--primary);border-color:var(--primary);color:white;font-weight:600}
+    .filter-sep{width:1px;height:24px;background:var(--border)}
+    .search-box{background:var(--bg3);border:1px solid var(--border);border-radius:20px;padding:6px 14px;font-size:0.78rem;color:var(--text);font-family:'Inter',sans-serif;outline:none;min-width:200px;transition:border-color 0.2s}
+    .search-box:focus{border-color:var(--primary)}.search-box::placeholder{color:var(--text3)}
+    .table-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;margin-bottom:1.5rem}
+    .table-header{padding:1rem 1.5rem;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center}
+    .table-title{font-size:1rem;font-weight:700;display:flex;align-items:center;gap:8px}
+    .count-badge{background:rgba(14,165,233,0.2);border:1px solid rgba(14,165,233,0.3);color:var(--primary-light);padding:2px 10px;border-radius:20px;font-size:0.72rem;font-weight:600}
+    .table-scroll{overflow-x:auto}
+    table{width:100%;border-collapse:collapse;font-size:0.83rem}
+    thead tr{background:var(--bg2);border-bottom:1px solid var(--border)}
+    th{padding:10px 14px;text-align:left;font-weight:600;color:var(--text2);font-size:0.75rem;text-transform:uppercase;letter-spacing:0.04em;white-space:nowrap}
+    tbody tr{border-bottom:1px solid rgba(51,65,85,0.5);transition:background 0.15s}
+    tbody tr:last-child{border-bottom:none}
+    tbody tr:hover{background:var(--card2)}
+    tbody tr.hidden-row{display:none}
+    td{padding:11px 14px;vertical-align:middle;white-space:nowrap}
+    .no-id{font-weight:700;color:var(--text3);font-size:0.75rem}
+    .patient-name{font-weight:600;color:var(--text)}
+    .patient-meta{font-size:0.7rem;color:var(--text3);margin-top:1px}
+    .session-badge{display:inline-flex;align-items:center;gap:5px;padding:3px 10px;border-radius:20px;font-size:0.72rem;font-weight:600}
+    .session-pagi{background:rgba(251,191,36,0.15);color:#fcd34d;border:1px solid rgba(251,191,36,0.3)}
+    .session-siang{background:rgba(14,165,233,0.15);color:var(--primary-light);border:1px solid rgba(14,165,233,0.3)}
+    .machine-badge{background:rgba(99,102,241,0.15);color:#a78bfa;border:1px solid rgba(99,102,241,0.3);padding:2px 8px;border-radius:6px;font-size:0.72rem;font-weight:600}
+    .status-badge{display:inline-flex;align-items:center;gap:5px;padding:3px 10px;border-radius:20px;font-size:0.72rem;font-weight:600}
+    .status-dot{width:6px;height:6px;border-radius:50%}
+    .s-selesai{background:rgba(34,197,94,0.15);color:#86efac;border:1px solid rgba(34,197,94,0.3)}.s-selesai .status-dot{background:var(--success)}
+    .s-berlangsung{background:rgba(14,165,233,0.15);color:var(--primary-light);border:1px solid rgba(14,165,233,0.3)}.s-berlangsung .status-dot{background:var(--primary);animation:pulse 1.2s infinite}
+    .s-menunggu{background:rgba(245,158,11,0.15);color:#fcd34d;border:1px solid rgba(245,158,11,0.3)}.s-menunggu .status-dot{background:var(--warning)}
+    .s-batal{background:rgba(239,68,68,0.15);color:#fca5a5;border:1px solid rgba(239,68,68,0.3)}.s-batal .status-dot{background:var(--danger)}
+    .duration-bar{display:flex;flex-direction:column;gap:3px;min-width:80px}
+    .bar-track{height:4px;background:var(--bg3);border-radius:4px;overflow:hidden}
+    .bar-fill{height:100%;border-radius:4px;background:linear-gradient(90deg,var(--primary),var(--primary-light))}
+    .bar-text{font-size:0.68rem;color:var(--text3)}
+    .section-title{font-size:1rem;font-weight:700;margin-bottom:1rem;display:flex;align-items:center;gap:8px}
+    .machines-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:1rem;margin-bottom:1.5rem}
+    .machine-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:1.25rem;transition:transform 0.2s,box-shadow 0.2s}
+    .machine-card:hover{transform:translateY(-2px);box-shadow:var(--shadow)}
+    .machine-card.in-use{border-color:rgba(14,165,233,0.4);background:linear-gradient(135deg,var(--card),rgba(14,165,233,0.05))}
+    .machine-card.available{border-color:rgba(34,197,94,0.3);background:linear-gradient(135deg,var(--card),rgba(34,197,94,0.04))}
+    .machine-card.maintenance{border-color:rgba(245,158,11,0.3);background:linear-gradient(135deg,var(--card),rgba(245,158,11,0.04))}
+    .machine-num{font-size:0.7rem;color:var(--text3);font-weight:600;text-transform:uppercase}
+    .machine-name{font-size:1rem;font-weight:700;margin:4px 0 8px}
+    .machine-status{font-size:0.73rem;font-weight:600;padding:3px 10px;border-radius:20px;display:inline-block;margin-bottom:8px}
+    .machine-card.in-use .machine-status{background:rgba(14,165,233,0.15);color:var(--primary-light);border:1px solid rgba(14,165,233,0.3)}
+    .machine-card.available .machine-status{background:rgba(34,197,94,0.15);color:#86efac;border:1px solid rgba(34,197,94,0.3)}
+    .machine-card.maintenance .machine-status{background:rgba(245,158,11,0.15);color:#fcd34d;border:1px solid rgba(245,158,11,0.3)}
+    .machine-patient{font-size:0.75rem;color:var(--text2);margin-top:4px}
+    .usage-bar{margin-top:10px}
+    .usage-label{display:flex;justify-content:space-between;font-size:0.68rem;color:var(--text3);margin-bottom:4px}
+    .usage-track{height:5px;background:var(--bg3);border-radius:4px;overflow:hidden}
+    .usage-fill{height:100%;border-radius:4px}
+    .fill-blue{background:linear-gradient(90deg,var(--primary),var(--primary-light))}
+    .fill-green{background:linear-gradient(90deg,var(--success),#86efac)}
+    .fill-orange{background:linear-gradient(90deg,var(--warning),#fcd34d)}
+    .bottom-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.5rem}
+    @media(max-width:900px){.bottom-grid{grid-template-columns:1fr}main{padding:1rem}header{padding:0 1rem}}
+    .mini-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:1.25rem}
+    .mini-title{font-size:0.85rem;font-weight:700;margin-bottom:1rem}
+    .chart-bars{display:flex;align-items:flex-end;gap:6px;height:100px;padding-bottom:4px}
+    .bar-col{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;height:100%;justify-content:flex-end}
+    .bar-col-fill{width:100%;border-radius:4px 4px 0 0;min-height:4px}
+    .bar-col-label{font-size:0.6rem;color:var(--text3);text-align:center}
+    .timeline{display:flex;flex-direction:column;gap:10px}
+    .timeline-item{display:flex;gap:10px;align-items:flex-start}
+    .tl-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;margin-top:3px}
+    .tl-blue{background:var(--primary)}.tl-green{background:var(--success)}.tl-orange{background:var(--warning)}.tl-red{background:var(--danger)}
+    .tl-content{flex:1}
+    .tl-title{font-size:0.78rem;font-weight:600;color:var(--text)}
+    .tl-meta{font-size:0.7rem;color:var(--text3)}
+    footer{text-align:center;padding:1.5rem;color:var(--text3);font-size:0.75rem;border-top:1px solid var(--border)}
+  </style>
+</head>
+<body>
+<header>
+  <div class="brand">
+    <div class="brand-icon">&#x1F3E5;</div>
+    <div class="brand-text">
+      <h1>Dashboard Penjadwalan Hemodialisis</h1>
+      <p>RSUD Semarang &mdash; Unit Hemodialisis</p>
+    </div>
+  </div>
+  <div class="header-right">
+    <div class="live-badge"><div class="live-dot"></div>LIVE</div>
+    <div class="clock" id="clock">--:--:--</div>
+  </div>
+</header>
+<main>
+  <div class="alert-banner" id="alertBanner">
+    <div class="alert-icon">&#x26A0;&#xFE0F;</div>
+    <div class="alert-content">
+      <h3>&#x26A1; Peringatan Otomatis &mdash; Perhatian Diperlukan</h3>
+      <ul class="alert-list" id="alertList"></ul>
+    </div>
+  </div>
+  <div class="summary-grid">
+    <div class="card blue"><div class="card-header"><span class="card-label">Total Pasien Hari Ini</span><span class="card-icon">&#x1F465;</span></div><div class="card-value" id="totalPasien">0</div><div class="card-sub">Terjadwal aktif</div></div>
+    <div class="card purple"><div class="card-header"><span class="card-label">Sesi Pagi</span><span class="card-icon">&#x1F305;</span></div><div class="card-value" id="sesiPagi">0</div><div class="card-sub">07.00 &ndash; 12.00 WIB</div></div>
+    <div class="card cyan"><div class="card-header"><span class="card-label">Sesi Siang</span><span class="card-icon">&#x2600;&#xFE0F;</span></div><div class="card-value" id="sesiSiang">0</div><div class="card-sub">12.30 &ndash; 17.30 WIB</div></div>
+    <div class="card green"><div class="card-header"><span class="card-label">Selesai</span><span class="card-icon">&#x2705;</span></div><div class="card-value" id="totalSelesai">0</div><div class="card-sub">Proses tuntaskan</div></div>
+    <div class="card orange"><div class="card-header"><span class="card-label">Berlangsung</span><span class="card-icon">&#x2699;&#xFE0F;</span></div><div class="card-value" id="totalBerlangsung">0</div><div class="card-sub">Sedang dijalani</div></div>
+    <div class="card red"><div class="card-header"><span class="card-label">Mesin Tersedia</span><span class="card-icon">&#x1F527;</span></div><div class="card-value" id="mesinTersedia">0</div><div class="card-sub">Dari 8 total mesin</div></div>
+  </div>
+  <div class="filters-bar">
+    <span class="filter-label">Session:</span>
+    <div class="filter-group" id="sessionFilter">
+      <button class="filter-btn active" data-filter="semua" onclick="setFilter('session','semua')">Semua</button>
+      <button class="filter-btn" data-filter="pagi" onclick="setFilter('session','pagi')">Pagi</button>
+      <button class="filter-btn" data-filter="siang" onclick="setFilter('session','siang')">Siang</button>
+    </div>
+    <div class="filter-sep"></div>
+    <span class="filter-label">Status:</span>
+    <div class="filter-group" id="statusFilter">
+      <button class="filter-btn active" data-filter="semua" onclick="setFilter('status','semua')">Semua</button>
+      <button class="filter-btn" data-filter="berlangsung" onclick="setFilter('status','berlangsung')">Berlangsung</button>
+      <button class="filter-btn" data-filter="menunggu" onclick="setFilter('status','menunggu')">Menunggu</button>
+      <button class="filter-btn" data-filter="selesai" onclick="setFilter('status','selesai')">Selesai</button>
+      <button class="filter-btn" data-filter="batal" onclick="setFilter('status','batal')">Batal</button>
+    </div>
+    <div class="filter-sep"></div>
+    <input class="search-box" id="searchBox" type="text" placeholder="Cari nama pasien..." oninput="applyFilters()" />
+  </div>
+  <div class="table-card">
+    <div class="table-header">
+      <div class="table-title">Jadwal Hemodialisis <span class="count-badge" id="tableCount">0 pasien</span></div>
+      <div style="font-size:0.75rem;color:var(--text3);">Senin, 25 Agustus 2026</div>
+    </div>
+    <div class="table-scroll">
+      <table><thead><tr><th>#</th><th>No. Reg</th><th>Nama Pasien</th><th>Umur/JK</th><th>Sesi</th><th>Jam</th><th>Mesin</th><th>Diagnosa</th><th>Durasi</th><th>Status</th><th>Dokter</th></tr></thead><tbody id="scheduleBody"></tbody></table>
+    </div>
+  </div>
+  <div class="section-title">Status Mesin Hemodialisis (8 Unit)</div>
+  <div class="machines-grid" id="machinesGrid"></div>
+  <div class="bottom-grid">
+    <div class="mini-card">
+      <div class="mini-title">Statistik Status Pasien</div>
+      <div class="chart-bars" id="chartBars"></div>
+      <div style="margin-top:8px;display:flex;gap:12px;flex-wrap:wrap;">
+        <span style="font-size:0.7rem;color:var(--text3);"><span style="display:inline-block;width:8px;height:8px;background:var(--primary);border-radius:2px;margin-right:4px;"></span>Berlangsung</span>
+        <span style="font-size:0.7rem;color:var(--text3);"><span style="display:inline-block;width:8px;height:8px;background:var(--success);border-radius:2px;margin-right:4px;"></span>Selesai</span>
+        <span style="font-size:0.7rem;color:var(--text3);"><span style="display:inline-block;width:8px;height:8px;background:var(--warning);border-radius:2px;margin-right:4px;"></span>Menunggu</span>
+        <span style="font-size:0.7rem;color:var(--text3);"><span style="display:inline-block;width:8px;height:8px;background:var(--danger);border-radius:2px;margin-right:4px;"></span>Batal</span>
+      </div>
+    </div>
+    <div class="mini-card">
+      <div class="mini-title">Log Aktivitas Terkini</div>
+      <div class="timeline" id="activityLog"></div>
+    </div>
+  </div>
+</main>
+<footer>&copy; 2026 Unit Hemodialisis RSUD Semarang &nbsp;|&nbsp; Dashboard Penjadwalan HD v1.0 &nbsp;|&nbsp; Poltekkes Kemenkes Semarang</footer>
+<script>
+const doctors=['dr. Wahyu Sp.PD','dr. Rini Sp.PD-KGH','dr. Budi Sp.PD','dr. Ayu Sp.PD'];
+const machines=[
+  {id:'HD-01',name:'Mesin HD 01',brand:'Fresenius 5008S',status:'in-use',usageToday:2,maxPerDay:3},
+  {id:'HD-02',name:'Mesin HD 02',brand:'Fresenius 4008H',status:'in-use',usageToday:2,maxPerDay:3},
+  {id:'HD-03',name:'Mesin HD 03',brand:'Nipro Surdial',status:'in-use',usageToday:3,maxPerDay:3},
+  {id:'HD-04',name:'Mesin HD 04',brand:'Braun Dialog+',status:'available',usageToday:1,maxPerDay:3},
+  {id:'HD-05',name:'Mesin HD 05',brand:'Fresenius 5008S',status:'in-use',usageToday:2,maxPerDay:3},
+  {id:'HD-06',name:'Mesin HD 06',brand:'Nipro Surdial',status:'maintenance',usageToday:0,maxPerDay:3},
+  {id:'HD-07',name:'Mesin HD 07',brand:'Braun Dialog+',status:'available',usageToday:1,maxPerDay:3},
+  {id:'HD-08',name:'Mesin HD 08',brand:'Fresenius 4008H',status:'in-use',usageToday:2,maxPerDay:3}
+];
+const patients=[
+  {id:'P001',reg:'HD-2026-001',name:'Bambang Sutrisno',age:58,gender:'L',session:'pagi',jam:'07:00',machine:'HD-01',diagnosa:'GGK + HT',durasiJam:4,durasiSelesai:100,status:'selesai',doctor:doctors[0]},
+  {id:'P002',reg:'HD-2026-002',name:'Siti Rahayu',age:45,gender:'P',session:'pagi',jam:'07:00',machine:'HD-02',diagnosa:'GGK Stage 5',durasiJam:4,durasiSelesai:100,status:'selesai',doctor:doctors[1]},
+  {id:'P003',reg:'HD-2026-003',name:'Agus Wibowo',age:63,gender:'L',session:'pagi',jam:'07:00',machine:'HD-03',diagnosa:'GGK + DM',durasiJam:5,durasiSelesai:100,status:'selesai',doctor:doctors[2]},
+  {id:'P004',reg:'HD-2026-004',name:'Dewi Lestari',age:50,gender:'P',session:'pagi',jam:'07:00',machine:'HD-05',diagnosa:'GGK + Anemia',durasiJam:4,durasiSelesai:100,status:'selesai',doctor:doctors[3]},
+  {id:'P005',reg:'HD-2026-005',name:'Hendra Gunawan',age:67,gender:'L',session:'pagi',jam:'07:30',machine:'HD-07',diagnosa:'GGK Stage 4',durasiJam:4,durasiSelesai:85,status:'berlangsung',doctor:doctors[0]},
+  {id:'P006',reg:'HD-2026-006',name:'Yuni Astuti',age:42,gender:'P',session:'pagi',jam:'07:30',machine:'HD-08',diagnosa:'GGK + HT',durasiJam:4,durasiSelesai:75,status:'berlangsung',doctor:doctors[1]},
+  {id:'P007',reg:'HD-2026-007',name:'Wahyu Prasetyo',age:55,gender:'L',session:'pagi',jam:'08:00',machine:'HD-04',diagnosa:'GGK + DM',durasiJam:4,durasiSelesai:0,status:'menunggu',doctor:doctors[2]},
+  {id:'P008',reg:'HD-2026-008',name:'Rina Susanti',age:38,gender:'P',session:'pagi',jam:'08:00',machine:'HD-01',diagnosa:'Glomerulonef.',durasiJam:3,durasiSelesai:0,status:'menunggu',doctor:doctors[3]},
+  {id:'P009',reg:'HD-2026-009',name:'Sugeng Hartono',age:60,gender:'L',session:'siang',jam:'12:30',machine:'HD-02',diagnosa:'GGK Stage 5',durasiJam:4,durasiSelesai:0,status:'menunggu',doctor:doctors[0]},
+  {id:'P010',reg:'HD-2026-010',name:'Fitri Handayani',age:47,gender:'P',session:'siang',jam:'12:30',machine:'HD-03',diagnosa:'GGK + HT',durasiJam:5,durasiSelesai:0,status:'menunggu',doctor:doctors[1]},
+  {id:'P011',reg:'HD-2026-011',name:'Doni Saputra',age:53,gender:'L',session:'siang',jam:'12:30',machine:'HD-05',diagnosa:'GGK + Anemia',durasiJam:4,durasiSelesai:0,status:'menunggu',doctor:doctors[2]},
+  {id:'P012',reg:'HD-2026-012',name:'Sri Wahyuni',age:41,gender:'P',session:'siang',jam:'13:00',machine:'HD-07',diagnosa:'GGK + DM',durasiJam:4,durasiSelesai:0,status:'menunggu',doctor:doctors[3]},
+  {id:'P013',reg:'HD-2026-013',name:'Totok Subagyo',age:70,gender:'L',session:'siang',jam:'13:00',machine:'HD-08',diagnosa:'GGK Stage 4',durasiJam:4,durasiSelesai:0,status:'menunggu',doctor:doctors[0]},
+  {id:'P014',reg:'HD-2026-014',name:'Endah Purwanti',age:49,gender:'P',session:'siang',jam:'13:30',machine:'HD-01',diagnosa:'GGK + HT',durasiJam:4,durasiSelesai:0,status:'menunggu',doctor:doctors[1]},
+  {id:'P015',reg:'HD-2026-015',name:'Rudi Kusuma',age:62,gender:'L',session:'siang',jam:'13:30',machine:'HD-04',diagnosa:'Nefropati DM',durasiJam:5,durasiSelesai:0,status:'menunggu',doctor:doctors[2]},
+  {id:'P016',reg:'HD-2026-016',name:'Maya Sari',age:35,gender:'P',session:'siang',jam:'14:00',machine:'HD-02',diagnosa:'GGK Stage 5',durasiJam:4,durasiSelesai:0,status:'menunggu',doctor:doctors[3]},
+  {id:'P017',reg:'HD-2026-017',name:'Guntur Wicaksono',age:58,gender:'L',session:'siang',jam:'14:00',machine:'HD-05',diagnosa:'GGK + HT',durasiJam:4,durasiSelesai:0,status:'batal',doctor:doctors[0]},
+  {id:'P018',reg:'HD-2026-018',name:'Lilis Suryani',age:44,gender:'P',session:'siang',jam:'14:30',machine:'HD-08',diagnosa:'GGK + DM',durasiJam:3,durasiSelesai:0,status:'menunggu',doctor:doctors[1]},
+  {id:'P019',reg:'HD-2026-019',name:'Marjono Santoso',age:66,gender:'L',session:'siang',jam:'14:30',machine:'HD-03',diagnosa:'GGK Stage 5',durasiJam:5,durasiSelesai:0,status:'menunggu',doctor:doctors[2]},
+  {id:'P020',reg:'HD-2026-020',name:'Hesti Rahmawati',age:39,gender:'P',session:'siang',jam:'15:00',machine:'HD-07',diagnosa:'Glomerulonef.',durasiJam:4,durasiSelesai:0,status:'menunggu',doctor:doctors[3]}
+];
+const activeFilters={session:'semua',status:'semua'};
+function setFilter(type,value){activeFilters[type]=value;const gid=type==='session'?'sessionFilter':'statusFilter';document.querySelectorAll('#'+gid+' .filter-btn').forEach(b=>b.classList.toggle('active',b.dataset.filter===value));applyFilters();}
+function applyFilters(){const s=document.getElementById('searchBox').value.toLowerCase();let v=0;document.querySelectorAll('#scheduleBody tr').forEach(r=>{const ok=(activeFilters.session==='semua'||r.dataset.session===activeFilters.session)&&(activeFilters.status==='semua'||r.dataset.status===activeFilters.status)&&(!s||r.dataset.name.includes(s));r.classList.toggle('hidden-row',!ok);if(ok)v++;});document.getElementById('tableCount').textContent=v+' pasien';}
+function renderTable(){const tb=document.getElementById('scheduleBody');tb.innerHTML='';patients.forEach((p,i)=>{const sb=p.session==='pagi'?'<span class="session-badge session-pagi">Pagi</span>':'<span class="session-badge session-siang">Siang</span>';const sc={selesai:'s-selesai',berlangsung:'s-berlangsung',menunggu:'s-menunggu',batal:'s-batal'}[p.status];const sl={selesai:'Selesai',berlangsung:'Berlangsung',menunggu:'Menunggu',batal:'Dibatalkan'}[p.status];let dh;if(p.status==='menunggu'){dh='<span style="color:var(--text3);font-size:0.73rem;">'+p.durasiJam+' jam</span>';}else if(p.status==='batal'){dh='<span style="color:var(--danger);">&#x2014;</span>';}else{dh='<div class="duration-bar"><div class="bar-track"><div class="bar-fill" style="width:'+p.durasiSelesai+'%"></div></div><div class="bar-text">'+p.durasiSelesai+'% &middot; '+p.durasiJam+'j</div></div>';}const tr=document.createElement('tr');tr.dataset.session=p.session;tr.dataset.status=p.status;tr.dataset.name=p.name.toLowerCase();tr.innerHTML='<td class="no-id">'+(i+1)+'</td><td><code style="font-size:0.7rem;color:var(--primary-light);background:rgba(14,165,233,0.1);padding:2px 6px;border-radius:4px;">'+p.reg+'</code></td><td><div class="patient-name">'+p.name+'</div><div class="patient-meta">'+p.id+'</div></td><td><span style="font-size:0.8rem;">'+p.age+' th / '+p.gender+'</span></td><td>'+sb+'</td><td><span style="font-size:0.82rem;">'+p.jam+'</span></td><td><span class="machine-badge">'+p.machine+'</span></td><td><span style="font-size:0.78rem;color:var(--text2);">'+p.diagnosa+'</span></td><td>'+dh+'</td><td><span class="status-badge '+sc+'"><span class="status-dot"></span>'+sl+'</span></td><td><span style="font-size:0.75rem;color:var(--text2);">'+p.doctor+'</span></td>';tb.appendChild(tr);});applyFilters();}
+function renderMachines(){const g=document.getElementById('machinesGrid');machines.forEach(m=>{const pct=Math.round((m.usageToday/m.maxPerDay)*100);const ip=patients.find(p=>p.machine===m.id&&p.status==='berlangsung');let pi;if(ip){pi='<div class="machine-patient">Pasien: '+ip.name+'</div>';}else if(m.status==='maintenance'){pi='<div class="machine-patient" style="color:var(--warning);">Sedang Maintenance</div>';}else{pi='<div class="machine-patient" style="color:var(--success);">Siap digunakan</div>';}const fc=m.status==='maintenance'?'fill-orange':m.status==='available'?'fill-green':'fill-blue';const sl={'in-use':'Digunakan','available':'Tersedia','maintenance':'Maintenance'}[m.status];const d=document.createElement('div');d.className='machine-card '+m.status;d.innerHTML='<div class="machine-num">'+m.id+'</div><div class="machine-name">'+m.name+'</div><span class="machine-status">'+sl+'</span><div style="font-size:0.7rem;color:var(--text3);margin-bottom:4px;">'+m.brand+'</div>'+pi+'<div class="usage-bar"><div class="usage-label"><span>Pemakaian Hari Ini</span><span>'+m.usageToday+'/'+m.maxPerDay+'x</span></div><div class="usage-track"><div class="usage-fill '+fc+'" style="width:'+pct+'%"></div></div></div>';g.appendChild(d);});}
+function renderSummary(){document.getElementById('totalPasien').textContent=patients.length;document.getElementById('sesiPagi').textContent=patients.filter(p=>p.session==='pagi').length;document.getElementById('sesiSiang').textContent=patients.filter(p=>p.session==='siang').length;document.getElementById('totalSelesai').textContent=patients.filter(p=>p.status==='selesai').length;document.getElementById('totalBerlangsung').textContent=patients.filter(p=>p.status==='berlangsung').length;document.getElementById('mesinTersedia').textContent=machines.filter(m=>m.status==='available').length;}
+function renderAlerts(){const al=[];machines.filter(m=>m.status==='maintenance').forEach(m=>al.push('Mesin '+m.name+' sedang maintenance'));machines.filter(m=>m.usageToday>=m.maxPerDay&&m.status!=='maintenance').forEach(m=>al.push(m.name+' mencapai kapasitas maksimal'));patients.filter(p=>p.status==='batal').forEach(p=>al.push('Pasien '+p.name+' ('+p.reg+') membatalkan sesi '+p.session));const ms=patients.filter(p=>p.session==='siang'&&p.status==='menunggu').length;if(ms>8)al.push(ms+' pasien sesi siang masih menunggu');document.getElementById('alertList').innerHTML=al.map(a=>'<li class="alert-tag">'+a+'</li>').join('');if(al.length===0)document.getElementById('alertBanner').style.display='none';}
+function renderChart(){const data=[{label:'Berlangsung',val:patients.filter(p=>p.status==='berlangsung').length,color:'var(--primary)'},{label:'Selesai',val:patients.filter(p=>p.status==='selesai').length,color:'var(--success)'},{label:'Menunggu',val:patients.filter(p=>p.status==='menunggu').length,color:'var(--warning)'},{label:'Batal',val:patients.filter(p=>p.status==='batal').length,color:'var(--danger)'}];const mx=Math.max(...data.map(d=>d.val));document.getElementById('chartBars').innerHTML=data.map(d=>{const h=mx>0?Math.round((d.val/mx)*90):0;return'<div class="bar-col"><span style="font-size:0.72rem;font-weight:700;color:var(--text2);">'+d.val+'</span><div class="bar-col-fill" style="height:'+h+'px;background:'+d.color+';opacity:0.9;"></div><div class="bar-col-label">'+d.label+'</div></div>';}).join('');}
+function renderActivity(){const logs=[{dot:'tl-green',t:'P003 Agus Wibowo - Sesi selesai',m:'07:00 > 12:05 - HD-03 - 5 jam 5 mnt'},{dot:'tl-green',t:'P001 Bambang Sutrisno - Sesi selesai',m:'07:00 > 11:02 - HD-01 - 4 jam 2 mnt'},{dot:'tl-green',t:'P002 Siti Rahayu - Sesi selesai',m:'07:00 > 11:00 - HD-02 - 4 jam'},{dot:'tl-green',t:'P004 Dewi Lestari - Sesi selesai',m:'07:00 > 11:00 - HD-05 - 4 jam'},{dot:'tl-blue',t:'P005 Hendra Gunawan - Sedang berlangsung',m:'Mulai 07:30 - HD-07 - 85% tuntaskan'},{dot:'tl-blue',t:'P006 Yuni Astuti - Sedang berlangsung',m:'Mulai 07:30 - HD-08 - 75% tuntaskan'},{dot:'tl-red',t:'P017 Guntur Wicaksono - Sesi DIBATALKAN',m:'14:00 - Alasan: Pasien tidak hadir'},{dot:'tl-orange',t:'HD-06 masuk jadwal maintenance',m:'12:00 WIB - Teknisi: Tim Biomedik'}];document.getElementById('activityLog').innerHTML=logs.map(l=>'<div class="timeline-item"><div class="tl-dot '+l.dot+'"></div><div class="tl-content"><div class="tl-title">'+l.t+'</div><div class="tl-meta">'+l.m+'</div></div></div>').join('');}
+function updateClock(){document.getElementById('clock').textContent=new Date().toLocaleTimeString('id-ID',{hour12:false});}
+renderSummary();renderTable();renderMachines();renderAlerts();renderChart();renderActivity();updateClock();setInterval(updateClock,1000);
+</script>
+</body>
+</html>
